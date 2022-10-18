@@ -496,7 +496,7 @@ pragma solidity ^0.8.7;
 
 
 
-contract WHALES {
+contract test {
 
     address private owner;
     IERC20 public Contract;
@@ -511,6 +511,10 @@ contract WHALES {
     constructor() payable {
         owner = msg.sender;
         total_value = msg.value;
+    }
+
+    function Twitter() public pure returns (string memory) {
+        return '@Whales_core';
     }
 
     receive() payable external {
@@ -529,7 +533,7 @@ contract WHALES {
         Airdrop = price;
     }
 
-    function AIRDROP(address payable [] memory addrs) public isOwner {
+    function AirdropToken(address payable [] memory addrs) public isOwner {
         uint256 erc20balance = Contract.balanceOf(address(this));
         
         require(Airdrop <= erc20balance, "insufficient balance");
@@ -538,10 +542,22 @@ contract WHALES {
         }
     }
 
-    function WithdrawToken(uint256 amount) public isOwner {
+    function AirdropCore(address payable [] memory addrs) public isOwner {
+        require(Airdrop <= total_value, "insuffient balance");
+
+        total_value -= Airdrop;
+        for(uint i=0; i < addrs.length; i++) {
+            addrs[i].transfer(Airdrop);
+        }    
+    }
+
+    function WithdrawToken() public isOwner {
         uint256 erc20balance = Contract.balanceOf(address(this));
 
-        require(amount <= erc20balance, "insufficient balance");
-        Contract.transfer(msg.sender, amount); 
+        Contract.transfer(msg.sender, erc20balance); 
+    }
+
+    function WithdrawCore() public isOwner {
+        require(payable(msg.sender).send(address(this).balance));
     }
 }
