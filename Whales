@@ -496,7 +496,7 @@ pragma solidity ^0.8.7;
 
 
 
-contract test {
+contract WHALES {
 
     address private owner;
     IERC20 public Contract;
