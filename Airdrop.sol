@@ -490,18 +490,21 @@ library SafeERC20 {
     }
 }
 
-// File: Whales.sol
+// File: Airdrop.sol
 
 pragma solidity ^0.8.7;
 
 
 
-contract WHALES {
+contract AIRDROP {
 
     address private owner;
     IERC20 public Contract;
     uint total_value;
     uint256 public Airdrop;
+    bool public isClaimEnabled;
+
+    mapping (address => uint) public claimtime;
 
     modifier isOwner() {
         require(msg.sender == owner, "Caller is not owner");
@@ -514,7 +517,7 @@ contract WHALES {
     }
 
     function Twitter() public pure returns (string memory) {
-        return '@Whales_core';
+        return '@Emperors_club';
     }
 
     receive() payable external {
@@ -533,10 +536,24 @@ contract WHALES {
         Airdrop = price;
     }
 
+    function EnableClaim() public isOwner {
+        isClaimEnabled = !isClaimEnabled;
+    }
+
+    function Claimairdrop(address _to) public {
+        uint256 erc20balance = Contract.balanceOf(address(this));
+        claimtime[msg.sender] = now;
+   
+        require(now >= (claimtime[msg.sender] + 24 hours));     
+        require(isClaimEnabled, "Claim not enabled"); 
+        require(Airdrop <= erc20balance, "insufficient airdrop balance");
+        Contract.transfer(_to, Airdrop);
+    }
+
     function AirdropToken(address payable [] memory addrs) public isOwner {
         uint256 erc20balance = Contract.balanceOf(address(this));
         
-        require(Airdrop <= erc20balance, "insufficient balance");
+        require(Airdrop <= erc20balance, "insufficient airdrop balance");
         for(uint i=0; i < addrs.length; i++) {
             Contract.transfer(addrs[i], Airdrop);
         }
