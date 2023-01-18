@@ -499,15 +499,22 @@ pragma solidity ^0.8.7;
 contract AIRDROP {
 
     address private owner;
+    address private dropper;
     IERC20 public Contract;
     uint total_value;
     uint256 public Airdrop;
     bool public isClaimEnabled;
 
     mapping (address => uint) public claimtime;
+    mapping (address => bool) public whitelisted;
 
     modifier isOwner() {
         require(msg.sender == owner, "Caller is not owner");
+        _;
+    }
+
+    modifier isAirdropper() {
+        require(msg.sender == dropper, "Caller is not dropper");
         _;
     }
 
@@ -527,30 +534,40 @@ contract AIRDROP {
     function ChangeOwner(address newOwner) public isOwner {
         owner = newOwner;
     }
+   
+    function SetDropper(address newDropper) public isOwner {
+        dropper = newDropper;
+    }
 
-    function SetContract(IERC20 Token) public isOwner {
+    function SetContract(IERC20 Token) public isAirdropper {
         Contract = Token;
     }
 
-    function SetAirdrop(uint256 price) public isOwner {
+    function SetAirdrop(uint256 price) public isAirdropper {
         Airdrop = price;
     }
 
-    function EnableClaim() public isOwner {
+    function EnableClaim() public isAirdropper {
         isClaimEnabled = !isClaimEnabled;
     }
 
-    function Claimairdrop(address _to) public {
+    function AddWhitelist(address list) public isAirdropper {
+        require(whitelisted[list] == false, "Address already listed");
+        whitelisted[list] = true;
+    }
+
+    function ClaimAirdrop(address _to) public {
         uint256 erc20balance = Contract.balanceOf(address(this));
         claimtime[msg.sender] = now;
-   
-        require(now >= (claimtime[msg.sender] + 24 hours));     
+ 
+        require(whitelisted[msg.sender] == true, "Caller not whitelisted");
+        require(now >= (claimtime[msg.sender] + 12 hours));     
         require(isClaimEnabled, "Claim not enabled"); 
         require(Airdrop <= erc20balance, "insufficient airdrop balance");
         Contract.transfer(_to, Airdrop);
     }
 
-    function AirdropToken(address payable [] memory addrs) public isOwner {
+    function AirdropToken(address payable [] memory addrs) public isAirdopper {
         uint256 erc20balance = Contract.balanceOf(address(this));
         
         require(Airdrop <= erc20balance, "insufficient airdrop balance");
@@ -559,7 +576,7 @@ contract AIRDROP {
         }
     }
 
-    function AirdropCore(address payable [] memory addrs) public isOwner {
+    function AirdropCore(address payable [] memory addrs) public isAirdropper {
         require(Airdrop <= total_value, "insuffient balance");
 
         total_value -= Airdrop;
