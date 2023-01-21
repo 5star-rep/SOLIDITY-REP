@@ -506,7 +506,6 @@ contract AIRDROP {
     bool public isClaimEnabled;
 
     mapping (address => uint) public claimtime;
-    mapping (address => bool) public whitelisted;
 
     modifier isOwner() {
         require(msg.sender == owner, "Caller is not owner");
@@ -551,16 +550,10 @@ contract AIRDROP {
         isClaimEnabled = !isClaimEnabled;
     }
 
-    function AddWhitelist(address list) public isAirdropper {
-        require(whitelisted[list] == false, "Address already listed");
-        whitelisted[list] = true;
-    }
-
     function ClaimAirdrop(address _to) public {
         uint256 erc20balance = Contract.balanceOf(address(this));
         claimtime[msg.sender] = now;
  
-        require(whitelisted[msg.sender] == true, "Caller not whitelisted");
         require(now >= (claimtime[msg.sender] + 12 hours));     
         require(isClaimEnabled, "Claim not enabled"); 
         require(Airdrop <= erc20balance, "insufficient airdrop balance");
