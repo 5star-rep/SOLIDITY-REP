@@ -503,6 +503,7 @@ contract AIRDROP {
     IERC20 public Contract;
     uint total_value;
     uint256 public Airdrop;
+    uint256 public Drops;
     bool public isClaimEnabled;
 
     mapping (address => uint) public claimtime;
@@ -549,10 +550,15 @@ contract AIRDROP {
     function EnableClaim() public isAirdropper {
         isClaimEnabled = !isClaimEnabled;
     }
+    
+    function ResetDrops() public isOwner {
+        Drops = 0;
+    }
 
     function ClaimAirdrop(address _to) public {
         uint256 erc20balance = Contract.balanceOf(address(this));
         claimtime[msg.sender] = now;
+        Drops++;
  
         require(now >= (claimtime[msg.sender] + 12 hours));     
         require(isClaimEnabled, "Claim not enabled"); 
