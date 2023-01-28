@@ -490,31 +490,28 @@ library SafeERC20 {
     }
 }
 
-// File: Airdrop.sol
+// File: Devspot.sol
 
 pragma solidity ^0.8.7;
 
 
 
-contract AIRDROP {
+contract DEVSPOT {
 
     address private owner;
-    address private dropper;
     IERC20 public Contract;
     uint total_value;
     uint256 public Airdrop;
+    uint256 public Presale;
+    uint256 public SalesCost;
     uint256 public Drops;
     bool public isClaimEnabled;
+    bool public isSalesEnabled;
 
     mapping (address => uint) public claimtime;
 
     modifier isOwner() {
         require(msg.sender == owner, "Caller is not owner");
-        _;
-    }
-
-    modifier isAirdropper() {
-        require(msg.sender == dropper, "Caller is not dropper");
         _;
     }
 
@@ -534,21 +531,29 @@ contract AIRDROP {
     function ChangeOwner(address newOwner) public isOwner {
         owner = newOwner;
     }
-   
-    function SetDropper(address newDropper) public isOwner {
-        dropper = newDropper;
-    }
 
-    function SetContract(IERC20 Token) public isAirdropper {
+    function SetContract(IERC20 Token) public isOwner {
         Contract = Token;
     }
 
-    function SetAirdrop(uint256 price) public isAirdropper {
-        Airdrop = price;
+    function SetAirdrop(uint256 amount) public isOwner {
+        Airdrop = amount;
     }
 
-    function EnableClaim() public isAirdropper {
+    function SetPresale(uint256 amount) public isOwner {
+        Presale = amount;
+    }
+
+    function SetSalesCost(uint256 cost) public isOwner {
+        SalesCost = cost;
+    }
+
+    function EnableClaim() public isOwner {
         isClaimEnabled = !isClaimEnabled;
+    }
+
+    function EnableSales() public isOwner {
+        isSalesEnabled = !isSalesEnabled;
     }
     
     function ResetDrops() public isOwner {
@@ -566,7 +571,7 @@ contract AIRDROP {
         Contract.transfer(_to, Airdrop);
     }
 
-    function AirdropToken(address payable [] memory addrs) public isAirdopper {
+    function AirdropToken(address payable [] memory addrs) public isOwner {
         uint256 erc20balance = Contract.balanceOf(address(this));
         
         require(Airdrop <= erc20balance, "insufficient airdrop balance");
@@ -575,13 +580,24 @@ contract AIRDROP {
         }
     }
 
-    function AirdropCore(address payable [] memory addrs) public isAirdropper {
+    function AirdropCore(address payable [] memory addrs) public isOwner {
         require(Airdrop <= total_value, "insuffient balance");
 
         total_value -= Airdrop;
         for(uint i=0; i < addrs.length; i++) {
             addrs[i].transfer(Airdrop);
         }    
+    }
+
+    function BuySales(address _to) public payable {
+        uint256 erc20balance = Contract.balanceOf(address(this));
+        Drops++;
+ 
+        require(Presale <= erc20balance, "insufficient presale balance");
+        require(isSalesEnabled, "Sales not enabled");
+        require(msg.value >= SalesCost, "Wrong value");
+        total_value += msg value;
+        Contract.transfer(_to, Presale);
     }
 
     function WithdrawToken() public isOwner {
