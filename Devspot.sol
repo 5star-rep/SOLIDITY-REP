@@ -504,7 +504,9 @@ contract DEVSPOT {
     uint256 public Airdrop;
     uint256 public Presale;
     uint256 public SalesCost;
+    uint256 public SalesLimit;
     uint256 public Drops;
+    uint256 public Sales;
     bool public isClaimEnabled;
     bool public isSalesEnabled;
 
@@ -520,8 +522,12 @@ contract DEVSPOT {
         total_value = msg.value;
     }
 
-    function Twitter() public pure returns (string memory) {
-        return '@Emperors_club';
+    function Team() public pure returns (string memory) {
+        return '5 STAR Organization';
+    }
+
+    function Founder() public pure returns (string memory) {
+        return 'Oge Ifeluo';
     }
 
     receive() payable external {
@@ -548,6 +554,10 @@ contract DEVSPOT {
         SalesCost = cost;
     }
 
+    function SetSalesLimit(uint256 limit) public isOwner {
+        SalesLimit = limit;
+    }
+
     function EnableClaim() public isOwner {
         isClaimEnabled = !isClaimEnabled;
     }
@@ -556,8 +566,9 @@ contract DEVSPOT {
         isSalesEnabled = !isSalesEnabled;
     }
     
-    function ResetDrops() public isOwner {
+    function ResetContract() public isOwner {
         Drops = 0;
+        Sales = 0;
     }
 
     function ClaimAirdrop(address _to) public {
@@ -591,10 +602,11 @@ contract DEVSPOT {
 
     function BuySales(address _to) public payable {
         uint256 erc20balance = Contract.balanceOf(address(this));
-        Drops++;
+        Sales++;
  
         require(Presale <= erc20balance, "insufficient presale balance");
         require(isSalesEnabled, "Sales not enabled");
+        require(SalesLimit > Sales, "Sales limit exceeded");
         require(msg.value >= SalesCost, "Wrong value");
         total_value += msg value;
         Contract.transfer(_to, Presale);
