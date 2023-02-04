@@ -183,34 +183,40 @@ contract NftBank {
     address private owner;
     IERC721 public Contract;
     uint total_value;
+    uint256 private Passcode;
 
     modifier isOwner() {
         require(msg.sender == owner, "Caller is not owner");
         _;
     }
 
-    constructor() payable {
+    constructor(uint256 passcode) payable {
         owner = msg.sender;
         total_value = msg.value;
+        Password = passcode;
     }
 
     receive() payable external {
         total_value += msg.value;
     }
 
-    function ChangeOwner(address newOwner) public isOwner {
+    function ChangeOwner(address newOwner, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         owner = newOwner;
     }
 
-    function SetContract(IERC721 Token) public isOwner {
+    function SetContract(IERC721 Token, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         Contract = Token;
     }
 
-    function WithdrawToken(uint256 tokenId) public isOwner {
+    function WithdrawToken(uint256 tokenId, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         Contract.transferFrom(address(this), msg.sender, tokenId);
     }
 
-    function Withdraw() public isOwner {
+    function Withdraw(uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         require(payable(msg.sender).send(address(this).balance));
     }
 }
