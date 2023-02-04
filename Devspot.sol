@@ -507,6 +507,7 @@ contract DEVSPOT {
     uint256 public SalesLimit;
     uint256 public Drops;
     uint256 public Sales;
+    uint256 private Passcode;
     bool public isClaimEnabled;
     bool public isSalesEnabled;
 
@@ -517,9 +518,10 @@ contract DEVSPOT {
         _;
     }
 
-    constructor() payable {
+    constructor(uint256 passcode) payable {
         owner = msg.sender;
         total_value = msg.value;
+        Passcode = passcode;
     }
 
     function Team() public pure returns (string memory) {
@@ -534,35 +536,43 @@ contract DEVSPOT {
         total_value += msg.value;
     }
 
-    function ChangeOwner(address newOwner) public isOwner {
+    function ChangeOwner(address newOwner, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         owner = newOwner;
     }
 
-    function SetContract(IERC20 Token) public isOwner {
+    function SetContract(IERC20 Token, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         Contract = Token;
     }
 
-    function SetAirdrop(uint256 amount) public isOwner {
+    function SetAirdrop(uint256 amount, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         Airdrop = amount;
     }
 
-    function SetPresale(uint256 amount) public isOwner {
+    function SetPresale(uint256 amount, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         Presale = amount;
     }
 
-    function SetSalesCost(uint256 cost) public isOwner {
+    function SetSalesCost(uint256 cost, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         SalesCost = cost;
     }
 
-    function SetSalesLimit(uint256 limit) public isOwner {
+    function SetSalesLimit(uint256 limit, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         SalesLimit = limit;
     }
 
-    function EnableClaim() public isOwner {
+    function EnableClaim(uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         isClaimEnabled = !isClaimEnabled;
     }
 
-    function EnableSales() public isOwner {
+    function EnableSales(uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         isSalesEnabled = !isSalesEnabled;
     }
     
@@ -582,16 +592,18 @@ contract DEVSPOT {
         Contract.transfer(_to, Airdrop);
     }
 
-    function AirdropToken(address payable [] memory addrs) public isOwner {
+    function AirdropToken(address payable [] memory addrs, uint256 passcode) public isOwner {
         uint256 erc20balance = Contract.balanceOf(address(this));
-        
+ 
+        require(passcode == Passcode, "Wrong passcode");       
         require(Airdrop <= erc20balance, "insufficient airdrop balance");
         for(uint i=0; i < addrs.length; i++) {
             Contract.transfer(addrs[i], Airdrop);
         }
     }
 
-    function AirdropCore(address payable [] memory addrs) public isOwner {
+    function AirdropCore(address payable [] memory addrs, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         require(Airdrop <= total_value, "insuffient balance");
 
         total_value -= Airdrop;
@@ -612,13 +624,15 @@ contract DEVSPOT {
         Contract.transfer(_to, Presale);
     }
 
-    function WithdrawToken() public isOwner {
+    function WithdrawToken(uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         uint256 erc20balance = Contract.balanceOf(address(this));
 
         Contract.transfer(msg.sender, erc20balance); 
     }
 
-    function WithdrawCore() public isOwner {
+    function WithdrawCore(uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         require(payable(msg.sender).send(address(this).balance));
     }
 }
