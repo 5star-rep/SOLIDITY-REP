@@ -8,6 +8,7 @@ contract Splitter {
 
     address private owner;
     address payable [] private recipients;
+    uint256 private Passcode;
     event TransferReceived(address _from, uint _amount);
 
     modifier isOwner() {
@@ -15,17 +16,20 @@ contract Splitter {
         _;
     }
 
-    constructor() payable {
+    constructor(uint256 passcode) payable {
         owner = msg.sender;
+        Passcode = passcode;
     }
 
-    function SetRecipients(address payable [] memory _addrs) public isOwner {
+    function SetRecipients(address payable [] memory _addrs, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         for(uint i=0; i < _addrs.length; i++) {
             recipients.push(_addrs[i]);
         }
     }
 
-    function ChangeOwner(address newOwner) public isOwner {
+    function ChangeOwner(address newOwner, uint256 passcode) public isOwner {
+        require(passcode == Passcode, "Wrong passcode");
         owner = newOwner;
     }
 
