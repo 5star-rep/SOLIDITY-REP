@@ -4,7 +4,7 @@
 pragma solidity ^0.8.7;
 
 
-contract Tracker {
+contract TRACKER {
 
     address private owner;
     address [] public Contracts;
@@ -19,7 +19,7 @@ contract Tracker {
         owner = msg.sender;
         Passcode = passcode;
 
-    function AddAddress(address track, uint256 passcode) public isOwner {
+    function AddAddress(address [] memory track, uint256 passcode) public isOwner {
         require(passcode == Passcode, "Wrong passcode");
         Contracts.push(track);
     }
