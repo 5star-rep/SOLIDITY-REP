@@ -620,7 +620,7 @@ contract DEVSPOT {
         require(isSalesEnabled, "Sales not enabled");
         require(SalesLimit > Sales, "Sales limit exceeded");
         require(msg.value >= SalesCost, "Wrong value");
-        total_value += msg value;
+        total_value += msg.value;
         Contract.transfer(_to, Presale);
     }
 
