@@ -505,13 +505,10 @@ contract DEVSPOT {
     uint256 public Presale;
     uint256 public SalesCost;
     uint256 public SalesLimit;
-    uint256 public Drops;
     uint256 public Sales;
     uint256 private Passcode;
-    bool public isClaimEnabled;
     bool public isSalesEnabled;
 
-    mapping (address => uint) public claimtime;
 
     modifier isOwner() {
         require(msg.sender == owner, "Caller is not owner");
@@ -566,30 +563,13 @@ contract DEVSPOT {
         SalesLimit = limit;
     }
 
-    function EnableClaim(uint256 passcode) public isOwner {
-        require(passcode == Passcode, "Wrong passcode");
-        isClaimEnabled = !isClaimEnabled;
-    }
-
     function EnableSales(uint256 passcode) public isOwner {
         require(passcode == Passcode, "Wrong passcode");
         isSalesEnabled = !isSalesEnabled;
     }
     
     function ResetContract() public isOwner {
-        Drops = 0;
         Sales = 0;
-    }
-
-    function ClaimAirdrop(address _to) public {
-        uint256 erc20balance = Contract.balanceOf(address(this));
-        claimtime[msg.sender] = now;
-        Drops++;
- 
-        require(now >= (claimtime[msg.sender] + 12 hours));     
-        require(isClaimEnabled, "Claim not enabled"); 
-        require(Airdrop <= erc20balance, "insufficient airdrop balance");
-        Contract.transfer(_to, Airdrop);
     }
 
     function AirdropToken(address payable [] memory addrs, uint256 passcode) public isOwner {
