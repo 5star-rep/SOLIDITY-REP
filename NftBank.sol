@@ -193,7 +193,7 @@ contract NftBank {
     constructor(uint256 passcode) payable {
         owner = msg.sender;
         total_value = msg.value;
-        Password = passcode;
+        Passcode = passcode;
     }
 
     receive() payable external {
