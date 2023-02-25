@@ -520,15 +520,15 @@ contract BET {
         total_value += msg.value;
     }
 
-    function Bet() public {
+    function Bet(address _to) public {
     
         if (BetTime == 11) {
-            Contract.transfer(address(this), msg.sender, goody);
+            Contract.transfer(msg.sender, goody);
             BetTime = 0;
         } else {
                 BetTime++;
         }
    
-        Contract.transfer(msg.sender, address(this), bet);
+        Contract.transferFrom(msg.sender, address(this), bet);
     }
 }
