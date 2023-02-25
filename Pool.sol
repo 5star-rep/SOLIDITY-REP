@@ -537,7 +537,7 @@ contract STAKEPOOL {
     function unstake() external {
         require(staked[msg.sender] > 0, "No token staked");
         uint256 amount = staked[msg.sender];
-        staked[msg.sender] -= amount;
+        staked[msg.sender] = 0;
         Contract.transfer(msg.sender, amount);
         totalStaked -= amount;
     }
