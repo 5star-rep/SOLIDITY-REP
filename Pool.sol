@@ -496,7 +496,7 @@ pragma solidity ^0.8.7;
 
 
 
-contract STAKEPOOL {
+contract EMPERORPOOL {
 
     IERC20 public Contract;
     uint total_value;
