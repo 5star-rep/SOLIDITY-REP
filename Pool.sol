@@ -534,7 +534,7 @@ contract EMPERORPOOL {
         totalStaked += amount;
     }
 
-    function unstake() external {
+    function withdraw() external {
         require(staked[msg.sender] > 0, "No token staked");
         uint256 amount = staked[msg.sender];
         staked[msg.sender] = 0;
@@ -544,11 +544,11 @@ contract EMPERORPOOL {
 
     function claim() public {
         uint256 erc20balance = Contract.balanceOf(address(this));
-        uint256 Pool = erc20balance - totalStaked;
+        uint256 Liquidity = erc20balance - totalStaked;
         uint256 secondsStaked = block.timestamp - stakedFromTS[msg.sender];
         uint256 rewards = staked[msg.sender] * secondsStaked / 3.154e7;
         require(staked[msg.sender] > 0, "No token staked");
-        require(rewards <= Pool, "Insufficient liquidity");
+        require(rewards <= Liquidity, "Insufficient liquidity");
 
         Contract.transfer(msg.sender, rewards);
         stakedFromTS[msg.sender] = block.timestamp;
