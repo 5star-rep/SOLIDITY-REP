@@ -522,10 +522,12 @@ contract EMPERORPOOL {
     }
 
     function stake(uint256 amount) external {
+        uint256 Coinbalance = Contract.balanceOf(address(this));
         require(amount > 0, "Amount cannot be 0");
         Contract.transferFrom(msg.sender, address(this), amount);
        
         if (staked[msg.sender] > 0) {
+            require(Coinbalance > totalStaked);
             claim();
         }
 
