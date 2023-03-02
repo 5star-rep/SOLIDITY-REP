@@ -548,7 +548,8 @@ contract EMPERORPOOL {
         uint256 secondsStaked = block.timestamp - stakedFromTS[msg.sender];
         uint256 rewards = staked[msg.sender] * secondsStaked / 3.154e7;
         require(staked[msg.sender] > 0, "No token staked");
-        require(rewards <= Liquidity, "Insufficient liquidity");
+        require(Liquidity > rewards, "Insufficient liquidity");
+        require(Liquidity > 0, "Insufficient liquidity");
 
         Contract.transfer(msg.sender, rewards);
         stakedFromTS[msg.sender] = block.timestamp;
