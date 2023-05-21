@@ -1,5 +1,5 @@
 pragma solidity ^0.8.7;
-// SPDX-Identify-License: MIT
+// SPDX-License-Identifier: MIT
 
 contract PREDICTION {
 
@@ -15,3 +15,15 @@ contract PREDICTION {
    constructor() payable {
        owner = msg.sender;
    }
+
+   modifier isOwner() {
+       require(msg.sender == owner, "Caller not owner");
+       _;
+   }
+       
+   receive() external payable {
+       feetreasury.transfer(msg.value);
+   }
+
+   function ChangeOwner(address newOwner) public isOwner {
+    
