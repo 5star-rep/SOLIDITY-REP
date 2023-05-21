@@ -9,8 +9,12 @@ contract PREDICTION {
    uint256 public cost = 1 ether;
    uint256 public jackpot = 5 ether;
    uint256 public fee = 1 ether;
+   uint256 public reward = 1 ether;
    uint256 private roller;
+   uint256 public updated;
    string public win;
+   
+   mapping (uint => uint) public lastupdate;
    
    constructor() payable {
        owner = msg.sender;
@@ -26,4 +30,17 @@ contract PREDICTION {
    }
 
    function ChangeOwner(address newOwner) public isOwner {
-    
+       owner = newOwner;
+   }
+   
+   function UpdateJackpot() public {
+       require(blocktimestamp >= (lastupdate[updated] + 28 days));
+       require(payable(msg.sender).send(reward);
+       jackpot = jackpot + 5 ether;
+       fee = fee + 1 ether;
+       total_value -= reward;
+       updated++;
+       lastupdate[updated] = blocktimestamp;
+   }
+   
+   
