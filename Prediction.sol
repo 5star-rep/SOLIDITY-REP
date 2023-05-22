@@ -5,6 +5,8 @@ contract PREDICTION {
 
    address public owner;
    address payable private feetreasury;
+   address public lastupdater;
+
    uint256 public total_value;
    uint256 public cost = 1 ether;
    uint256 public jackpot = 5 ether;
@@ -26,11 +28,16 @@ contract PREDICTION {
    }
        
    receive() external payable {
-       feetreasury.transfer(msg.value);
+       uint256 charity = msg.value;
+       feetreasury.transfer(charity);
    }
 
    function ChangeOwner(address newOwner) public isOwner {
        owner = newOwner;
+   }
+   
+   function ChangeTreasury(address payable newTreasury) public isOwner {
+       feetreasury = newTreasury;
    }
    
    function UpdateJackpot() public {
@@ -41,7 +48,7 @@ contract PREDICTION {
        total_value -= reward;
        lastupdate = 1;
        updated++;
-       lastupdate[updated] = blocktimestamp;
+       lastupdater = msg.sender;
    }
    
    function Predict(string memory letter) public payable {
@@ -66,3 +73,9 @@ contract PREDICTION {
        }
        
        if (letter == winning) {
+           require(payable(msg.sender).send(jackpot));
+           feetreasury.send(fee);
+           total_value -= jackpot;
+           total_value -= fee;
+       }
+}
