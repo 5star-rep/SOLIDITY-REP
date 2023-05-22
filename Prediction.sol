@@ -53,3 +53,16 @@ contract PREDICTION {
            winning = C;
        } else if (roller == 2) {
                   winning = O;
+       } else if (roller == 3) {
+                  winning = R;
+       } else if (roller == 4) {
+                  winning = E;
+       }
+       
+       if (roller == 5) {
+           roller = 1;
+       } else {
+               roller++;
+       }
+       
+       if (letter == winning) {
