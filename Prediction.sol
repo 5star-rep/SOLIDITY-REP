@@ -4,17 +4,17 @@ pragma solidity ^0.8.7;
 contract PREDICTION {
 
    address public owner;
-   address payable private feeTreasury;
+   address payable private feetreasury;
    uint256 public total_value;
    uint256 public cost = 1 ether;
    uint256 public jackpot = 5 ether;
    uint256 public fee = 1 ether;
    uint256 public reward = 1 ether;
    uint256 private roller;
+   uint256 public lastupdate;
    uint256 public updated;
-   string public win;
-   
-   mapping (uint => uint) public lastupdate;
+   string public winning;
+  
    
    constructor() payable {
        owner = msg.sender;
@@ -34,13 +34,22 @@ contract PREDICTION {
    }
    
    function UpdateJackpot() public {
-       require(blocktimestamp >= (lastupdate[updated] + 28 days));
-       require(payable(msg.sender).send(reward);
+       require(lastupdate >= 100);
+       require(payable(msg.sender).send(reward));
        jackpot = jackpot + 5 ether;
        fee = fee + 1 ether;
        total_value -= reward;
+       lastupdate = 1;
        updated++;
        lastupdate[updated] = blocktimestamp;
    }
    
-   
+   function Predict(string memory letter) public payable {
+       require(msg.value >= cost, "Wrong value");
+       lastupdate++;
+       total_value += msg.value;
+       
+       if (roller == 1) {
+           winning = C;
+       } else if (roller == 2) {
+                  winning = O;
