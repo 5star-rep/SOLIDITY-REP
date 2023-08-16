@@ -549,7 +549,7 @@ contract EMPERORPOOL {
         uint256 erc20balance = Contract.balanceOf(address(this));
         uint256 Liquidity = erc20balance - totalStaked;
         uint256 secondsStaked = block.timestamp - stakedFromTS[msg.sender];
-        uint256 rewards = staked[msg.sender] * secondsStaked / 3.154e7;
+        uint256 rewards = staked[msg.sender] * secondsStaked / totalStaked;
         require(staked[msg.sender] > 0, "No token staked");
         require(Liquidity > rewards, "Insufficient liquidity");
 
