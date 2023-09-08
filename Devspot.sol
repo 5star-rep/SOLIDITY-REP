@@ -499,7 +499,7 @@ pragma solidity ^0.8.7;
 contract DEVSPOT {
 
     address private owner;
-    address payable [] memory devs;
+    address payable [] private devs;
     IERC20 public Contract;
     uint total_value;
     uint256 public Airdrop;
@@ -558,7 +558,7 @@ contract DEVSPOT {
 
     function SetDevs(address payable [] memory _devs) public isOwner {
         for(uint i=0; i < _devs.length; i++) {
-            _devs[i].push(devs);
+            devs.push(_devs[i]);
         }
     }
 
