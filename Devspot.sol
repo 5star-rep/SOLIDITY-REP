@@ -499,6 +499,7 @@ pragma solidity ^0.8.7;
 contract DEVSPOT {
 
     address private owner;
+    address payable [] memory devs;
     IERC20 public Contract;
     uint total_value;
     uint256 public Airdrop;
@@ -519,14 +520,6 @@ contract DEVSPOT {
         owner = msg.sender;
         total_value = msg.value;
         Passcode = passcode;
-    }
-
-    function Team() public pure returns (string memory) {
-        return '5 STAR Organization';
-    }
-
-    function Founder() public pure returns (string memory) {
-        return 'Oge Ifeluo';
     }
 
     receive() payable external {
@@ -562,6 +555,18 @@ contract DEVSPOT {
         require(passcode == Passcode, "Wrong passcode");
         SalesLimit = limit;
     }
+
+    function SetDevs(address payable [] memory _devs) public isOwner {
+        for(uint i=0; i < _devs.length; i++) {
+            _devs[i].push(devs);
+        }
+    }
+
+    function Claim() public isOwner {
+        for(uint i=0; i < devs.length; i++) {  
+            Contract.transfer(devs[i], Airdrop);  
+        }
+    }  
 
     function EnableSales(uint256 passcode) public isOwner {
         require(passcode == Passcode, "Wrong passcode");
