@@ -372,6 +372,10 @@ contract BETCOIN is Context, IBEP20, Ownable {
     uint256 public _pot;
     uint256 private _passcode;
     uint256 private _totalTry;
+    uint256 public _totalPayout;
+    uint256 public _totalStake;
+    uint256 public _totalWin;
+    uint256 public _totalPlaytime;
     uint256 public _totalValue;
     uint8 public _decimals;
     string public _symbol;
@@ -387,7 +391,7 @@ contract BETCOIN is Context, IBEP20, Ownable {
         _symbol = "BET";
         _decimals = 18;
         _totalSupply = 1000000000000000000000000; // 1,000,000 token
-        _stake = 500000000000000000; // 0.5 token
+        _stake = 10000000000000000000; // 10 core
         _reward = 5000000000000000000; // 5 tokens
         _balances[msg.sender] = _totalSupply;
         _totalValue = msg.value;
@@ -548,11 +552,8 @@ contract BETCOIN is Context, IBEP20, Ownable {
     }
 
     function PLAY(uint256 _no) public {
-        require(_balances[address(this)] >= _reward, "insufficient liquidity");
-
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
         _luckyNO = luckyno;
-        _reward = _no.mul(2);
 
         if (_no == luckyno) {
             _round++;
@@ -562,13 +563,14 @@ contract BETCOIN is Context, IBEP20, Ownable {
             _mint(msg.sender, _reward);
         }
 
-        if (_round == 100) {
+        if (_round == 0) {
             ismainnet = !ismainnet;
         }
 
         if (ismainnet == true) {
             require(_balances[msg.sender] >= _no, "insufficient balance to play");
             _circSupply = _circSupply.sub(_no);
+            _reward = _no.mul(2);
             _transfer(msg.sender, _dead, _no);
         }
 
@@ -587,18 +589,22 @@ contract BETCOIN is Context, IBEP20, Ownable {
 
     function PLAYCORE(address payable _to) public payable {
         require(_totalValue >= _jackPot, "insufficient liquidity");
-        require(msg.value <= _bet, "wrong value");
+        require(msg.value <= _stake, "value exceeded");
         _totalValue += msg.value;
+        _totalStake += msg.value;
         _jackPot = msg.value.mul(2);
+        _totalPlaytime++;
 
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
         _luckyNO = luckyno;
 
         if (_no == luckyno) {
             _pot++;
+            _totalWin++;
             _potRate[msg.sender]++;
             _potWinners[_pot] = msg.sender;
             _totalValue -= _jackPot;
+            _totalPayout += _jackPot;
             _to.transfer(_jackPot);
         }
 
