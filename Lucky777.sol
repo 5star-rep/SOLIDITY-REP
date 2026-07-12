@@ -531,9 +531,9 @@ contract BETCOIN is Context, IBEP20, Ownable {
         _circSupply = circSupply;
     }
 
-    function setBet(uint256 bet, uint256 psscde) public onlyOwner {
+    function setMainnet(uint256 psscde) public onlyOwner {
         require(psscde == _passcode, "wrong passcode");
-        _bet = bet;
+        ismainnet = !ismainnet;
     }
 
     function setJackPot(uint256 jckpot, uint256 psscde) public onlyOwner {
