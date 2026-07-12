@@ -536,11 +536,6 @@ contract BETCOIN is Context, IBEP20, Ownable {
         ismainnet = !ismainnet;
     }
 
-    function setJackPot(uint256 jckpot, uint256 psscde) public onlyOwner {
-        require(psscde == _passcode, "wrong passcode");
-        _jackPot = jckpot;
-    }
-
     function addLiquidity() public payable {
         _totalValue += msg.value;
     }
@@ -561,10 +556,6 @@ contract BETCOIN is Context, IBEP20, Ownable {
             _roundWinners[_round] = msg.sender;
             _circSupply = _circSupply.add(_reward);
             _mint(msg.sender, _reward);
-        }
-
-        if (_round == 0) {
-            ismainnet = !ismainnet;
         }
 
         if (ismainnet == true) {
