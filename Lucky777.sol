@@ -552,13 +552,14 @@ contract BETCOIN is Context, IBEP20, Ownable {
 
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
         _luckyNO = luckyno;
+        _reward = _no.mul(2);
 
         if (_no == luckyno) {
             _round++;
             _winRate[msg.sender]++;
             _roundWinners[_round] = msg.sender;
             _circSupply = _circSupply.add(_reward);
-            _transfer(address(this), msg.sender, _reward);
+            _mint(msg.sender, _reward);
         }
 
         if (_round == 100) {
@@ -566,28 +567,29 @@ contract BETCOIN is Context, IBEP20, Ownable {
         }
 
         if (ismainnet == true) {
-            require(_balances[msg.sender] >= _stake, "insufficient balance to play");
-            _circSupply = _circSupply.sub(_stake);
-            _transfer(msg.sender, _dead, _stake);
+            require(_balances[msg.sender] >= _no, "insufficient balance to play");
+            _circSupply = _circSupply.sub(_no);
+            _transfer(msg.sender, _dead, _no);
         }
 
-        if (_tryTime[msg.sender] == 4) {
+        if (_tryTime[msg.sender] == 2) {
             _tryTime[msg.sender] = 1;
         } else {
                 _tryTime[msg.sender]++;
         }
 
-        if (_totalTry == 5) {
-            _totalTry = 2;
+        if (_totalTry == 2) {
+            _totalTry = 1;
         } else {
                 _totalTry++;
         }
     }
 
-    function PLAYCORE(address payable _to, uint256 _no) public payable {
+    function PLAYCORE(address payable _to) public payable {
         require(_totalValue >= _jackPot, "insufficient liquidity");
-        require(msg.value >= _bet, "wrong value");
+        require(msg.value <= _bet, "wrong value");
         _totalValue += msg.value;
+        _jackPot = msg.value.mul(2);
 
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
         _luckyNO = luckyno;
@@ -600,14 +602,14 @@ contract BETCOIN is Context, IBEP20, Ownable {
             _to.transfer(_jackPot);
         }
 
-        if (_tryTime[msg.sender] == 4) {
+        if (_tryTime[msg.sender] == 2) {
             _tryTime[msg.sender] = 1;
         } else {
                 _tryTime[msg.sender]++;
         }
 
-        if (_totalTry == 5) {
-            _totalTry = 2;
+        if (_totalTry == 2) {
+            _totalTry = 1;
         } else {
                 _totalTry++;
         }
