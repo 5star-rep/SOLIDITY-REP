@@ -371,6 +371,7 @@ contract BETCOIN is Context, IBEP20, Ownable {
     uint256 public _reward;
     uint256 public _jackPot;
     uint256 public _luckyNO;
+    uint256 public _luckyPay;
     uint256 public _round;
     uint256 public _pot;
     uint256 private _passcode;
@@ -575,6 +576,18 @@ contract BETCOIN is Context, IBEP20, Ownable {
             _circSupply = _circSupply.sub(_no);
             _reward = _no.mul(2);
             _transfer(msg.sender, _dead, _no);
+        }
+
+        if (luckyno == 1) {
+            _luckyPay = 132;
+        }
+
+        if (luckyno == 2) {
+            _luckyPay = 277;
+        }
+
+        if (luckyno == 3) {
+            _luckyPay = 777;
         }
 
         if (_tryTime[msg.sender] == 2) {
