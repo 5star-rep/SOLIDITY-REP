@@ -354,6 +354,10 @@ contract BETCOIN is Context, IBEP20, Ownable {
 
     mapping (address => uint256) public _potRate;
 
+    mapping (address => uint256) public _payouts;
+
+    mapping (address => uint256) public _stakes;
+
     mapping (uint256 => address) public _roundWinners;
 
     mapping (uint256 => address) public _potWinners;
@@ -583,6 +587,7 @@ contract BETCOIN is Context, IBEP20, Ownable {
         _totalValue += msg.value;
         _totalStake += msg.value;
         _jackPot = msg.value.mul(2);
+        _stakes[msg.sender] += msg.value;
         _totalPlaytime++;
 
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
@@ -591,6 +596,7 @@ contract BETCOIN is Context, IBEP20, Ownable {
         if (_no == luckyno) {
             _pot++;
             _totalWin++;
+            _payouts[msg.sender] += _jackPot;
             _potRate[msg.sender]++;
             _potWinners[_pot] = msg.sender;
             _totalValue -= _jackPot;
