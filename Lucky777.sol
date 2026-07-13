@@ -553,11 +553,6 @@ contract BETCOIN is Context, IBEP20, Ownable {
         _totalValue -= amount;
     }
 
-    function sweepLqdty(uint256 psscde) public onlyOwner {
-        require(psscde == _passcode, "wrong passcode");
-        require(payable(msg.sender).send(address(this).balance));
-    }
-
     function PLAY(uint256 _no) public {
         require(ismainnet == true, "mainnet not true");
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
