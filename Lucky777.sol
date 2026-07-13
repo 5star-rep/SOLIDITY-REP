@@ -364,7 +364,6 @@ contract BETCOIN is Context, IBEP20, Ownable {
     uint256 private _totalSupply;
     uint256 public _circSupply;
     uint256 public _stake;
-    uint256 public _bet;
     uint256 public _reward;
     uint256 public _jackPot;
     uint256 public _luckyNO;
@@ -392,7 +391,6 @@ contract BETCOIN is Context, IBEP20, Ownable {
         _decimals = 18;
         _totalSupply = 1000000000000000000000000; // 1,000,000 token
         _stake = 10000000000000000000; // 10 core
-        _reward = 5000000000000000000; // 5 tokens
         _balances[msg.sender] = _totalSupply;
         _totalValue = msg.value;
 
@@ -547,6 +545,7 @@ contract BETCOIN is Context, IBEP20, Ownable {
     }
 
     function PLAY(uint256 _no) public {
+        require(ismainnet == true, "mainnet not true");
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
         _luckyNO = luckyno;
 
